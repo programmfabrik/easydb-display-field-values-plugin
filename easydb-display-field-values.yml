@@ -1,0 +1,10 @@
+plugin:
+  name: easydb-display-field-values
+  version: 1.0
+  server:
+    api-version:
+      require: 1
+  webfrontend:
+    url: easydb-display-field-values.js
+    css: easydb-display-field-values.css
+    l10n: l10n/
