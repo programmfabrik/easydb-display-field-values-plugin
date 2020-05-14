@@ -1,5 +1,7 @@
 class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 
+	@FIELD_NAMES_REGEXP = /%([a-z][a-z0-9_:]{0,61}[a-z0-9])%/g
+
 	isSimpleSplit: ->
 		return true
 
@@ -7,19 +9,17 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 		return true
 
 	getOptions: ->
-		idObjecttype = @maskEditor.getMask().getTable().table_id
-
-		dataFormData = {}
-
 		textHintButton = new CUI.Button
 			text: $$("display-field-values.custom.splitter.text.hint-text")
 			appearance: "flat"
 			onClick: =>
-				_fields = @__getFieldNames(dataFormData)
-				if _fields.length == 0
-					text = $$("display-field-values.custom.splitter.text.hint-content-empty")
-				else
-					text = $$("display-field-values.custom.splitter.text.hint-content", fields: _fields)
+				fieldNames = []
+				for node in @father.children
+					fieldName = node.getData().field_name
+					if not fieldName
+						continue
+					fieldNames.push(fieldName)
+				text = $$("display-field-values.custom.splitter.text.hint-content", fields: fieldNames)
 
 				content = new CUI.Label
 					text: text
@@ -31,42 +31,19 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 				pop.show()
 
 		fields = [
-			type: CUI.DataForm
-			name: "fields"
-			form: label: $$("display-field-values.custom.splitter.form-field-selector.label")
-			maximize_horizontal: true
-			onDataChanged: (_, field) =>
-				CUI.Events.trigger
-					node: field
-					type: "content-resize"
-				return
-			onDataInit: (_, data) ->
-				dataFormData = data
-			fields: [
-				type: ez5.FieldSelector
-				name: "field_name"
-				store_value: "name"
-				placeholder: $$("display-field-values.custom.splitter.options.field-selector.placeholder")
-				maximize_horizontal: true
-				objecttype_id: idObjecttype
-				schema: "HEAD"
-				filter: (field, data) =>
-					if data.field_name != field.name() and dataFormData.fields.some((fieldData) -> fieldData.field_name == field.name())
-						return false
-
-					if not @father.children.some((_field) => _field.getData().field_name == field.name())
-						return false
-
-					return field instanceof TextColumn
-			]
-		,
 			type: CUI.Input
 			name: "text"
+			min_rows: 3
 			textarea: true
 			maximize_horizontal: true
 			form:
 				label: $$("display-field-values.custom.splitter.text.label")
 				hint: textHintButton
+			onDataChanged: (_, field) =>
+				CUI.Events.trigger
+					node: field
+					type: "content-resize"
+				return
 		]
 
 		return fields
@@ -81,7 +58,13 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 		label = new CUI.Label(text: "", markdown: true)
 
 		setText = =>
-			text = @__getLabelText(dataOptions.text, data, fieldNames)
+			values = @__getValues(data, fieldNames)
+			if fieldNames.length > 0 and CUI.util.isEmpty(values)
+				label.hide()
+			else
+				label.show()
+
+			text = @__getLabelText(dataOptions.text, values)
 			label.setText(text)
 		setText()
 
@@ -89,7 +72,7 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 			return label
 
 		for fieldName in fieldNames
-			element = data["#{fieldName}:rendered"].getElement()
+			element = data["#{fieldName}:rendered"]?.getElement()
 			if not element
 				continue
 
@@ -104,31 +87,44 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 	isEnabledForNested: ->
 		return true
 
-	__getLabelText: (text, data, fieldNames) ->
+	__getLabelText: (text, values) ->
+		for fieldName, value of values
+			regexp = new RegExp("%#{fieldName}:best%", "g")
+			text = text.replace(regexp, value)
+
+			regexp = new RegExp("%#{fieldName}:urlencoded%", "g")
+			text = text.replace(regexp, encodeURIComponent(value))
+
+			regexp = new RegExp("%#{fieldName}%", "g")
+			text = text.replace(regexp, value)
+		return text
+
+	__getValues: (data, fieldNames) ->
+		values = {}
 		for fieldName in fieldNames
-			fieldNameRegexp = fieldName
 			value = data[fieldName] or ""
 			if CUI.util.isPlainObject(value)
 				bestValue = ez5.loca.getBestFrontendValue(value)
 				if not CUI.util.isEmpty(bestValue)
-					regexp = new RegExp("%#{fieldNameRegexp}%:best", "g")
-					text = text.replace(regexp, bestValue)
+					values[fieldName] = bestValue
 					continue
 				value = Object.values(value).filter((_val) -> !!_val).join("-")
 
 			if CUI.util.isEmpty(value)
 				continue
+			values[fieldName] = value
+		return values
 
-			regexp = new RegExp("%#{fieldNameRegexp}%", "g")
-			text = text.replace(regexp, value)
-
-			regexp = new RegExp("%#{fieldNameRegexp}:urlencoded%", "g")
-			text = text.replace(regexp, encodeURIComponent(value))
-		return text
-
-	__getFieldNames: (data) ->
-		if not data?.fields
-			return []
-		return data.fields.filter((fieldData) -> !!fieldData.field_name).map((fieldData) -> fieldData.field_name)
+	__getFieldNames: (dataOptions) ->
+		fieldNames = []
+		text = dataOptions.text
+		matches = text.matchAll(ez5.DisplayFieldValuesMaskSplitter.FIELD_NAMES_REGEXP)
+		while values = matches.next()?.value
+			if values[1]
+				fieldName = values[1]
+				fieldName = fieldName.replace(":best", "")
+				fieldName = fieldName.replace(":urlencoded", "")
+				fieldNames.push(fieldName)
+		return fieldNames
 
 MaskSplitter.plugins.registerPlugin(ez5.DisplayFieldValuesMaskSplitter)
