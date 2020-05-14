@@ -8,21 +8,12 @@ display-field-values.custom.splitter.text.hint-content,"The following replacemen
 
 It's also possible to add **:urlencoded** to the key in order to encode the value.
 
-<<<<<<< HEAD
-For localization fields use **:best** to use the best frontend language, otherwise all values will be appended.","The following replacements can be used in the text: \n\n%(* %|fields|%\n)s
-
-It's also possible to add **:urlencoded** to the key in order to encode the value.
-
-For localization fields use **:best** to use the best frontend language, otherwise all values will be appended.",,
-display-field-values.custom.splitter.text.hint-content-empty,In order to use replacements it's necessary to select fields above.,In order to use replacements it's necessary to select fields above.,,
-display.field.values.mask.splitter.option.fields,Display field values: Fields set,Display field values: Fields set,,
-display.field.values.mask.splitter.option.text,Display field values: Text set,Display field values: Text set,,
-=======
 For localization fields use **:best** to use the best frontend language, otherwise all values will be appended.
+
 The output will use markdown.","The following replacements can be used in the text: \n\n%(* %|fields|%\n)s
 
 It's also possible to add **:urlencoded** to the key in order to encode the value.
 
 For localization fields use **:best** to use the best frontend language, otherwise all values will be appended.
+
 The output will use markdown.",,
->>>>>>> Display field values: Removed the field selector aso it uses the field names in the placeholders, also smaller changes. See #56832
