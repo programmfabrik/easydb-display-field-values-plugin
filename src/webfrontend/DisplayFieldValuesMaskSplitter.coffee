@@ -9,6 +9,8 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 		return true
 
 	getOptions: ->
+		table = ez5.schema.HEAD._table_by_id[@maskEditor.getMask().getTable().table_id]
+
 		textHintButton = new CUI.Button
 			text: $$("display-field-values.custom.splitter.text.hint-text")
 			appearance: "flat"
@@ -18,7 +20,21 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 					fieldName = node.getData().field_name
 					if not fieldName
 						continue
-					fieldNames.push(fieldName)
+					field = table._column_by_name[fieldName]
+					if field.type == "daterange"
+						fieldNames.push("#{fieldName}:from")
+						fieldNames.push("#{fieldName}:to")
+					else if field.type == "eas"
+						# TODO
+					else if field.type in ["text_l10n", "text_l10n_oneline"]
+						fieldNames.push("#{fieldName}:best")
+						for lang in ez5.loca.getDatabaseLanguages()
+							fieldNames.push("#{fieldName}:#{lang}")
+						continue
+					else
+						fieldNames.push(fieldName)
+
+				fieldNames = fieldNames.concat(fieldNames.map((fieldName) -> "#{fieldName}:urlencoded"))
 				text = $$("display-field-values.custom.splitter.text.hint-content", fields: fieldNames)
 
 				content = new CUI.Label
@@ -31,11 +47,17 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 				pop.show()
 
 		fields = [
+			type: CUI.Checkbox
+			name: "output_empty"
+			form:
+				label: $$("display-field-values.custom.splitter.output_empty.label")
+		,
 			type: CUI.Input
 			name: "text"
-			min_rows: 3
+			min_rows: 9
 			textarea: true
 			maximize_horizontal: true
+			class: "ez5-display-field-values-text-input"
 			form:
 				label: $$("display-field-values.custom.splitter.text.label")
 				hint: textHintButton
@@ -59,7 +81,7 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 
 		setText = =>
 			values = @__getValues(data, fieldNames)
-			if fieldNames.length > 0 and CUI.util.isEmpty(values)
+			if dataOptions.output_empty and fieldNames.length > 0 and CUI.util.isEmpty(values)
 				label.hide()
 			else
 				label.show()
@@ -88,30 +110,43 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 		return true
 
 	__getLabelText: (text, values) ->
+		doReplace = (field, _value) ->
+			regexp = new RegExp("%#{field}:urlencoded%", "g")
+			text = text.replace(regexp, encodeURIComponent(_value))
+			regexp = new RegExp("%#{field}%", "g")
+			text = text.replace(regexp, _value)
+
 		for fieldName, value of values
-			regexp = new RegExp("%#{fieldName}:best%", "g")
-			text = text.replace(regexp, value)
+			if CUI.util.isPlainObject(value)
+				bestValue = ez5.loca.getBestFrontendValue(value)
+				if not CUI.util.isEmpty(bestValue)
+					doReplace("#{fieldName}:best", bestValue)
 
-			regexp = new RegExp("%#{fieldName}:urlencoded%", "g")
-			text = text.replace(regexp, encodeURIComponent(value))
+				if not CUI.util.isEmpty(value.value) # For dates, for example.
+					doReplace("#{fieldName}", value.value)
 
-			regexp = new RegExp("%#{fieldName}%", "g")
-			text = text.replace(regexp, value)
+				for key, _value of value
+					if CUI.util.isEmpty(_value)
+						continue
+					_field = "#{fieldName}:#{key}"
+					doReplace(_field, _value)
+			else
+				doReplace(fieldName, value)
+
+		text = text.replace(/%(.*)%/g, "") # Remove all unused placeholders with empty.
 		return text
 
 	__getValues: (data, fieldNames) ->
 		values = {}
 		for fieldName in fieldNames
-			value = data[fieldName] or ""
-			if CUI.util.isPlainObject(value)
-				bestValue = ez5.loca.getBestFrontendValue(value)
-				if not CUI.util.isEmpty(bestValue)
-					values[fieldName] = bestValue
-					continue
-				value = Object.values(value).filter((_val) -> !!_val).join("-")
-
+			value = data[fieldName]
 			if CUI.util.isEmpty(value)
 				continue
+
+			if CUI.util.isPlainObject(value)
+				if not Object.values(value).some((_val) -> not CUI.util.isEmpty(_val))
+					continue
+
 			values[fieldName] = value
 		return values
 
@@ -122,8 +157,7 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 		while values = matches.next()?.value
 			if values[1]
 				fieldName = values[1]
-				fieldName = fieldName.replace(":best", "")
-				fieldName = fieldName.replace(":urlencoded", "")
+				fieldName = fieldName.replace(/:(.*)/g, "")
 				fieldNames.push(fieldName)
 		return fieldNames
 

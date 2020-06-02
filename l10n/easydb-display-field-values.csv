@@ -1,19 +1,12 @@
 key,de-DE,en-US,it-IT,es-ES
-display.field.values.mask.splitter.name,Display field values,Display field values,,
-display.field.values.mask.splitter.title|text,Display field values,Display field values,,
-display.field.values.mask.splitter.option.blockWidth,Block width,Block width,,
-display-field-values.custom.splitter.text.label,Text to show,Text to show,,
-display-field-values.custom.splitter.text.hint-text,Show replacements,Show replacements,,
-display-field-values.custom.splitter.text.hint-content,"The following replacements can be used in the text: \n\n%(* %|fields|%\n)s
+display.field.values.mask.splitter.name,Feldwerte anzeigen,Display field values,,
+display.field.values.mask.splitter.title|text,Feldwerte anzeigen,Display field values,,
+display.field.values.mask.splitter.option.blockWidth,%(value)s,%(value)s,,
+display-field-values.custom.splitter.text.label,Anzuzeigender Text,Text to show,,
+display-field-values.custom.splitter.text.hint-text,Ersetzungen anzeigen,Show replacements,,
+display-field-values.custom.splitter.text.hint-content,"Die folgenden Ersetzungen können im Text verwendet werden: \n\n%(* %|fields|%\n)s
 
-It's also possible to add **:urlencoded** to the key in order to encode the value.
-
-For localization fields use **:best** to use the best frontend language, otherwise all values will be appended.
-
-The output will use markdown.","The following replacements can be used in the text: \n\n%(* %|fields|%\n)s
-
-It's also possible to add **:urlencoded** to the key in order to encode the value.
-
-For localization fields use **:best** to use the best frontend language, otherwise all values will be appended.
+Bei der Ausgabe wird ein Abschlag verwendet.","The following replacements can be used in the text: \n\n%(* %|fields|%\n)s
 
 The output will use markdown.",,
+display-field-values.custom.splitter.output_empty.label,"Leere Ausgabe, wenn keine Ersetzungen verfügbar sind",Output empty if no replacements are available,,
