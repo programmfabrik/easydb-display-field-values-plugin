@@ -34,7 +34,7 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 					else
 						fieldNames.push(fieldName)
 
-				fieldNames = fieldNames.concat(fieldNames.map((fieldName) -> "#{fieldName}:urlencoded"))
+				fieldNames = fieldNames.concat(fieldNames.map((fieldName) -> "#{fieldName}:urlencoded")).sort()
 				text = $$("display-field-values.custom.splitter.text.hint-content", fields: fieldNames)
 
 				content = new CUI.Label
@@ -81,7 +81,7 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 
 		setText = =>
 			values = @__getValues(data, fieldNames)
-			if dataOptions.output_empty and fieldNames.length > 0 and CUI.util.isEmpty(values)
+			if !dataOptions.output_empty and fieldNames.length > 0 and CUI.util.isEmpty(values)
 				label.hide()
 			else
 				label.show()
@@ -133,7 +133,8 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 			else
 				doReplace(fieldName, value)
 
-		text = text.replace(/%(.*)%/g, "") # Remove all unused placeholders with empty.
+		# Remove all unused placeholders with empty.
+		text = text.replace(ez5.DisplayFieldValuesMaskSplitter.FIELD_NAMES_REGEXP, "")
 		return text
 
 	__getValues: (data, fieldNames) ->
