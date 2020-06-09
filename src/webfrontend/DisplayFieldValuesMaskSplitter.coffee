@@ -1,6 +1,6 @@
 class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 
-	@FIELD_NAMES_REGEXP = /%([a-z][a-z0-9_:]{0,61}[a-z0-9])%/g
+	@FIELD_NAMES_REGEXP = /%([a-z][a-zA-Z0-9_:\-]{0,61}[a-zA-Z0-9])%/g
 
 	isSimpleSplit: ->
 		return true
@@ -34,7 +34,7 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 					else
 						fieldNames.push(fieldName)
 
-				fieldNames = fieldNames.concat(fieldNames.map((fieldName) -> "#{fieldName}:urlencoded"))
+				fieldNames = fieldNames.concat(fieldNames.map((fieldName) -> "#{fieldName}:urlencoded")).sort()
 				text = $$("display-field-values.custom.splitter.text.hint-content", fields: fieldNames)
 
 				content = new CUI.Label
@@ -76,12 +76,12 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 			return
 
 		data = opts.data
-		fieldNames = @__getFieldNames(dataOptions)
+		fieldNames = @__getFieldNames(dataOptions.text)
 		label = new CUI.Label(text: "", markdown: true)
 
 		setText = =>
 			values = @__getValues(data, fieldNames)
-			if dataOptions.output_empty and fieldNames.length > 0 and CUI.util.isEmpty(values)
+			if !dataOptions.output_empty and fieldNames.length > 0 and CUI.util.isEmpty(values)
 				label.hide()
 			else
 				label.show()
@@ -110,6 +110,8 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 		return true
 
 	__getLabelText: (text, values) ->
+		replacements = @__getFieldNames(text, false)
+
 		doReplace = (field, _value) ->
 			regexp = new RegExp("%#{field}:urlencoded%", "g")
 			text = text.replace(regexp, encodeURIComponent(_value))
@@ -133,7 +135,10 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 			else
 				doReplace(fieldName, value)
 
-		text = text.replace(/%(.*)%/g, "") # Remove all unused placeholders with empty.
+		# Remove all unused placeholders with empty.
+		for replacement in replacements
+			regexp = new RegExp("%#{replacement}%", "g")
+			text = text.replace(regexp, "")
 		return text
 
 	__getValues: (data, fieldNames) ->
@@ -150,15 +155,15 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 			values[fieldName] = value
 		return values
 
-	__getFieldNames: (dataOptions) ->
-		fieldNames = []
-		text = dataOptions.text
+	__getFieldNames: (text, removeSuffix = true) ->
+		fieldNames = new Set()
 		matches = text.matchAll(ez5.DisplayFieldValuesMaskSplitter.FIELD_NAMES_REGEXP)
 		while values = matches.next()?.value
 			if values[1]
 				fieldName = values[1]
-				fieldName = fieldName.replace(/:(.*)/g, "")
-				fieldNames.push(fieldName)
-		return fieldNames
+				if removeSuffix
+					fieldName = fieldName.replace(/:(.*)/g, "")
+				fieldNames.add(fieldName)
+		return Array.from(fieldNames)
 
 MaskSplitter.plugins.registerPlugin(ez5.DisplayFieldValuesMaskSplitter)
