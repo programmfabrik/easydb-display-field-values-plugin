@@ -6,7 +6,8 @@ display-field-values.custom.splitter.text.label,Anzuzeigender Text,Text to show,
 display-field-values.custom.splitter.text.hint-text,Ersetzungen anzeigen,Show replacements,,
 display-field-values.custom.splitter.text.hint-content,"Die folgenden Ersetzungen können im Text verwendet werden: \n\n%(* %|fields|%\n)s
 
-Bei der Ausgabe wird ein Abschlag verwendet.","The following replacements can be used in the text: \n\n%(* %|fields|%\n)s
+Die Ausgabe wird **markdown** verwenden.","The following replacements can be used in the text: \n\n%(* %|fields|%\n)s
 
-The output will use markdown.",,
+The output will use **markdown**.",,
 display-field-values.custom.splitter.output_empty.label,"Leere Ausgabe, wenn keine Ersetzungen verfügbar sind",Output empty if no replacements are available,,
+display-field-values.custom.splitter.dont_escape_markdown_in_values.label,Don't escape markdown in values.,Don't escape markdown in values.,,

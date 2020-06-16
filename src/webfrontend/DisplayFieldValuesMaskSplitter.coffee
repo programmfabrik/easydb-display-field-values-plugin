@@ -52,6 +52,11 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 			form:
 				label: $$("display-field-values.custom.splitter.output_empty.label")
 		,
+			type: CUI.Checkbox
+			name: "dont_escape_markdown_in_values"
+			form:
+				label: $$("display-field-values.custom.splitter.dont_escape_markdown_in_values.label")
+		,
 			type: CUI.Input
 			name: "text"
 			min_rows: 9
@@ -70,6 +75,13 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 
 		return fields
 
+	getDefaultOptions: ->
+		defaultOpts =
+			output_empty: false
+			dont_escape_markdown_in_values: false
+			text: ""
+		return defaultOpts
+
 	renderField: (opts) ->
 		dataOptions = @getDataOptions()
 		if not dataOptions.text
@@ -86,7 +98,7 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 			else
 				label.show()
 
-			text = @__getLabelText(dataOptions.text, values)
+			text = @__getLabelText(dataOptions, values)
 			label.setText(text)
 		setText()
 
@@ -109,10 +121,15 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 	isEnabledForNested: ->
 		return true
 
-	__getLabelText: (text, values) ->
+	__getLabelText: (dataOptions, values) ->
+		text = dataOptions.text
+		dontEscapeMarkdownInValues = dataOptions.dont_escape_markdown_in_values
 		replacements = @__getFieldNames(text, false)
 
 		doReplace = (field, _value) ->
+			if not dontEscapeMarkdownInValues
+				_value = MarkdownEscape.escape(value)
+
 			regexp = new RegExp("%#{field}:urlencoded%", "g")
 			text = text.replace(regexp, encodeURIComponent(_value))
 			regexp = new RegExp("%#{field}%", "g")
