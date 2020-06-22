@@ -102,19 +102,18 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 			label.setText(text)
 		setText()
 
-		if opts.mode != "editor"
+		if opts.mode != "editor" or not opts.editor?.__mainPane
 			return label
 
-		for fieldName in fieldNames
-			element = data["#{fieldName}:rendered"]?.getElement()
-			if not element
-				continue
-
-			CUI.Events.listen
-				type: "editor-changed"
-				node: element
-				call: =>
+		CUI.Events.listen
+			type: "editor-changed"
+			node: opts.editor.__mainPane # Cannot use the getter because it builds the main pane instead of returning it.
+			call: (ev) =>
+				element = ev.getElement()
+				fieldName = element?.getName?()
+				if fieldName and fieldName in fieldNames
 					setText()
+				return
 
 		return label
 
