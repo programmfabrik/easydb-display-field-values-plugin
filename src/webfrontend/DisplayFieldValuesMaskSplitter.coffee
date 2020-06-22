@@ -126,11 +126,12 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 		replacements = @__getFieldNames(text, false)
 
 		doReplace = (field, _value) ->
+			regexp = new RegExp("%#{field}:urlencoded%", "g")
+			text = text.replace(regexp, encodeURI(_value))
+
 			if not dontEscapeMarkdownInValues
 				_value = MarkdownEscape.escape(value)
 
-			regexp = new RegExp("%#{field}:urlencoded%", "g")
-			text = text.replace(regexp, encodeURIComponent(_value))
 			regexp = new RegExp("%#{field}%", "g")
 			text = text.replace(regexp, _value)
 
