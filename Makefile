@@ -15,6 +15,7 @@ INSTALL_FILES = \
 	easydb-display-field-values.yml
 
 COFFEE_FILES = \
+    src/webfrontend/MarkdownEscape.coffee \
     src/webfrontend/DisplayFieldValuesMaskSplitter.coffee
 
 SCSS_FILES = src/webfrontend/scss/display-field-values.scss

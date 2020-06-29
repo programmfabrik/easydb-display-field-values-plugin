@@ -10,3 +10,4 @@ Die Ausgabe wird **markdown** verwenden.","The following replacements can be use
 
 The output will use **markdown**.",,
 display-field-values.custom.splitter.output_empty.label,"Leere Ausgabe, wenn keine Ersetzungen verfügbar sind",Output empty if no replacements are available,,
+display-field-values.custom.splitter.dont_escape_markdown_in_values.label,Don't escape markdown in values.,Don't escape markdown in values.,,

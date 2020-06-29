@@ -52,6 +52,11 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 			form:
 				label: $$("display-field-values.custom.splitter.output_empty.label")
 		,
+			type: CUI.Checkbox
+			name: "dont_escape_markdown_in_values"
+			form:
+				label: $$("display-field-values.custom.splitter.dont_escape_markdown_in_values.label")
+		,
 			type: CUI.Input
 			name: "text"
 			min_rows: 9
@@ -70,6 +75,13 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 
 		return fields
 
+	getDefaultOptions: ->
+		defaultOpts =
+			output_empty: false
+			dont_escape_markdown_in_values: false
+			text: ""
+		return defaultOpts
+
 	renderField: (opts) ->
 		dataOptions = @getDataOptions()
 		if not dataOptions.text
@@ -86,35 +98,40 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 			else
 				label.show()
 
-			text = @__getLabelText(dataOptions.text, values)
+			text = @__getLabelText(dataOptions, values)
 			label.setText(text)
 		setText()
 
-		if opts.mode != "editor"
+		if opts.mode != "editor" or not opts.editor?.__mainPane
 			return label
 
-		for fieldName in fieldNames
-			element = data["#{fieldName}:rendered"]?.getElement()
-			if not element
-				continue
-
-			CUI.Events.listen
-				type: "editor-changed"
-				node: element
-				call: =>
+		CUI.Events.listen
+			type: "editor-changed"
+			node: opts.editor.__mainPane # Cannot use the getter because it builds the main pane instead of returning it.
+			call: (ev) =>
+				element = ev.getElement()
+				fieldName = element?.getName?()
+				if fieldName and fieldName in fieldNames
 					setText()
+				return
 
 		return label
 
 	isEnabledForNested: ->
 		return true
 
-	__getLabelText: (text, values) ->
+	__getLabelText: (dataOptions, values) ->
+		text = dataOptions.text
+		dontEscapeMarkdownInValues = dataOptions.dont_escape_markdown_in_values
 		replacements = @__getFieldNames(text, false)
 
 		doReplace = (field, _value) ->
 			regexp = new RegExp("%#{field}:urlencoded%", "g")
-			text = text.replace(regexp, encodeURIComponent(_value))
+			text = text.replace(regexp, encodeURI(_value))
+
+			if not dontEscapeMarkdownInValues
+				_value = MarkdownEscape.escape(value)
+
 			regexp = new RegExp("%#{field}%", "g")
 			text = text.replace(regexp, _value)
 
