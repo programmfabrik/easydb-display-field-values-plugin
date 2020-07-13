@@ -45,16 +45,6 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 				pop.show()
 
 		fields = [
-			type: CUI.Checkbox
-			name: "output_empty"
-			form:
-				label: $$("display-field-values.custom.splitter.output_empty.label")
-		,
-			type: CUI.Checkbox
-			name: "dont_escape_markdown_in_values"
-			form:
-				label: $$("display-field-values.custom.splitter.dont_escape_markdown_in_values.label")
-		,
 			type: CUI.Input
 			name: "text"
 			min_rows: 9
@@ -69,6 +59,16 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 					node: field
 					type: "content-resize"
 				return
+		,
+			type: CUI.Checkbox
+			name: "output_empty"
+			form:
+				label: $$("display-field-values.custom.splitter.output_empty.label")
+		,
+			type: CUI.Checkbox
+			name: "dont_escape_markdown_in_values"
+			form:
+				label: $$("display-field-values.custom.splitter.dont_escape_markdown_in_values.label")
 		]
 
 		return fields
