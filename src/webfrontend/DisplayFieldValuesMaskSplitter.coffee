@@ -9,8 +9,6 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 		return true
 
 	getOptions: ->
-		table = ez5.schema.HEAD._table_by_id[@maskEditor.getMask().getTable().table_id]
-
 		textHintButton = new CUI.Button
 			text: $$("display-field-values.custom.splitter.text.hint-text")
 			appearance: "flat"
@@ -18,9 +16,9 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 				fieldNames = []
 				for node in @father.children
 					fieldName = node.getData().field_name
-					if not fieldName
+					field = node.getData().field?._column
+					if not fieldName or not field
 						continue
-					field = table._column_by_name[fieldName]
 					if field.type == "daterange"
 						fieldNames.push("#{fieldName}:from")
 						fieldNames.push("#{fieldName}:to")
