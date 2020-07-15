@@ -106,11 +106,8 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 		CUI.Events.listen
 			type: "editor-changed"
 			node: opts.editor.__mainPane # Cannot use the getter because it builds the main pane instead of returning it.
-			call: (ev) =>
-				element = ev.getElement()
-				fieldName = element?.getName?()
-				if fieldName and fieldName in fieldNames
-					setText()
+			call: =>
+				setText()
 				return
 
 		return label
@@ -128,7 +125,7 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 			text = text.replace(regexp, encodeURI(_value))
 
 			if not dontEscapeMarkdownInValues
-				_value = MarkdownEscape.escape(value)
+				_value = MarkdownEscape.escape(_value)
 
 			regexp = new RegExp("%#{field}%", "g")
 			text = text.replace(regexp, _value)
