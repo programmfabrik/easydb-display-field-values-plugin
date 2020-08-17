@@ -29,6 +29,10 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 						for lang in ez5.loca.getDatabaseLanguages()
 							fieldNames.push("#{fieldName}:#{lang}")
 						continue
+					else if field.type == "link"
+						fieldNames.push("#{fieldName}:standard-1")
+						fieldNames.push("#{fieldName}:standard-2")
+						fieldNames.push("#{fieldName}:standard-3")
 					else
 						fieldNames.push(fieldName)
 
@@ -132,18 +136,25 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 
 		for fieldName, value of values
 			if CUI.util.isPlainObject(value)
-				bestValue = ez5.loca.getBestFrontendValue(value)
-				if not CUI.util.isEmpty(bestValue)
-					doReplace("#{fieldName}:best", bestValue)
+				if value._standard
+					for i in [1,2,3]
+						if not value._standard[i]?.text
+							continue
+						bestValue = ez5.loca.getBestFrontendValue(value._standard[i].text)
+						doReplace("#{fieldName}:standard-#{i}", bestValue)
+				else
+					bestValue = ez5.loca.getBestFrontendValue(value)
+					if not CUI.util.isEmpty(bestValue)
+						doReplace("#{fieldName}:best", bestValue)
 
-				if not CUI.util.isEmpty(value.value) # For dates, for example.
-					doReplace("#{fieldName}", value.value)
+					if not CUI.util.isEmpty(value.value) # For dates, for example.
+						doReplace("#{fieldName}", value.value)
 
-				for key, _value of value
-					if CUI.util.isEmpty(_value)
-						continue
-					_field = "#{fieldName}:#{key}"
-					doReplace(_field, _value)
+					for key, _value of value
+						if CUI.util.isEmpty(_value) or CUI.util.isPlainObject(_value)
+							continue
+						_field = "#{fieldName}:#{key}"
+						doReplace(_field, _value)
 			else
 				doReplace(fieldName, value)
 
