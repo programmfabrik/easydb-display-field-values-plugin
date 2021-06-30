@@ -1,5 +1,6 @@
 build-stamp-*
 build
+build-info.json
 *~
 *.coffee.js
 *.spec.coffee
