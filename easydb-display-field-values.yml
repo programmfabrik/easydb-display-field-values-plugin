@@ -1,5 +1,5 @@
 plugin:
-  name: easydb-display-field-values
+  name: easydb-display-field-values-plugin
   version: 1.0
   server:
     api-version:
