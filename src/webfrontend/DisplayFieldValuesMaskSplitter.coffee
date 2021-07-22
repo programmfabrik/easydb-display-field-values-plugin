@@ -8,6 +8,10 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 	renderAsField: ->
 		return true
 
+	isVisible: (mode, opts) ->
+		isVisible = super(mode, opts)
+		return isVisible or mode == "text"
+
 	getOptions: ->
 		textHintButton = new CUI.Button
 			text: $$("display-field-values.custom.splitter.text.hint-text")
