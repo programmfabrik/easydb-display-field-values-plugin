@@ -1,4 +1,5 @@
 PLUGIN_NAME = easydb-display-field-values
+PLUGIN_PATH = easydb-display-field-values-plugin
 
 EASYDB_LIB = easydb-library
 L10N_FILES = l10n/$(PLUGIN_NAME).csv
