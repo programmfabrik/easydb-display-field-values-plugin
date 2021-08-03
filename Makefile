@@ -12,7 +12,7 @@ INSTALL_FILES = \
 	$(WEB)/l10n/en-US.json \
 	$(CSS) \
 	$(JS) \
-	easydb-display-field-values.yml
+	manifest.yml
 
 COFFEE_FILES = \
     src/webfrontend/MarkdownEscape.coffee \
