@@ -1,13 +1,19 @@
-key,de-DE,en-US,it-IT,es-ES
-display.field.values.mask.splitter.name,Feldwerte anzeigen,Display field values,,
-display.field.values.mask.splitter.title|text,Feldwerte anzeigen,Display field values,,
-display.field.values.mask.splitter.option.blockWidth,%(value)s,%(value)s,,
-display-field-values.custom.splitter.text.label,Ausgabe,Output,,
-display-field-values.custom.splitter.text.hint-text,Ersetzungen anzeigen,Show replacements,,
+key,de-DE,en-US,da-DK,fi-FI,sv-SE,it-IT,es-ES
+display.field.values.mask.splitter.name,Feldwerte anzeigen,Display field values,Display field values,Display field values,Display field values,,
+display.field.values.mask.splitter.title|text,Feldwerte anzeigen,Display field values,Display field values,Display field values,Display field values,,
+display.field.values.mask.splitter.option.blockWidth,%(value)s,%(value)s,%(value)s,%(value)s,%(value)s,,
+display-field-values.custom.splitter.text.label,Ausgabe,Output,Output,Output,Output,,
+display-field-values.custom.splitter.text.hint-text,Ersetzungen anzeigen,Show replacements,Show replacements,Show replacements,Show replacements,,
 display-field-values.custom.splitter.text.hint-content,"Die folgenden Ersetzungen können im Text verwendet werden: \n\n%(* %|fields|%\n)s
 
 Die Ausgabe wird **markdown** verwenden.","The following replacements can be used in the text: \n\n%(* %|fields|%\n)s
 
+The output will use **markdown**.","The following replacements can be used in the text: \n\n%(* %|fields|%\n)s
+
+The output will use **markdown**.","The following replacements can be used in the text: \n\n%(* %|fields|%\n)s
+
+The output will use **markdown**.","The following replacements can be used in the text: \n\n%(* %|fields|%\n)s
+
 The output will use **markdown**.",,
-display-field-values.custom.splitter.output_empty.label,"Text ausblenden, wenn keine Ersetzungen verfügbar sind",Hide text if no replacements are available,,
-display-field-values.custom.splitter.dont_escape_markdown_in_values.label,Auch die Feldinhalte als Markdown rendern,Also render field values as markdown,,
+display-field-values.custom.splitter.output_empty.label,"Text ausblenden, wenn keine Ersetzungen verfügbar sind",Hide text if no replacements are available,Hide text if no replacements are available,Hide text if no replacements are available,Hide text if no replacements are available,,
+display-field-values.custom.splitter.dont_escape_markdown_in_values.label,Auch die Feldinhalte als Markdown rendern,Also render field values as markdown,Also render field values as markdown,Also render field values as markdown,Also render field values as markdown,,
