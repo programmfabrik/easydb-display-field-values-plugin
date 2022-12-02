@@ -1,6 +1,6 @@
 plugin:
   name: easydb-display-field-values
-  version: 1.0
+  version: 1.1
   server:
     api-version:
       require: 1
