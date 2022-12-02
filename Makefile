@@ -16,7 +16,8 @@ INSTALL_FILES = \
 
 COFFEE_FILES = \
     src/webfrontend/MarkdownEscape.coffee \
-    src/webfrontend/DisplayFieldValuesMaskSplitter.coffee
+    src/webfrontend/DisplayFieldValuesMaskSplitter.coffee \
+    src/webfrontend/DisplayFieldValuesPDFNode.coffee
 
 SCSS_FILES = src/webfrontend/scss/display-field-values.scss
 

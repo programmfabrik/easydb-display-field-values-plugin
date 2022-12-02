@@ -17,3 +17,4 @@ The output will use **markdown**.","The following replacements can be used in th
 The output will use **markdown**.",,
 display-field-values.custom.splitter.output_empty.label,"Text ausblenden, wenn keine Ersetzungen verfügbar sind",Hide text if no replacements are available,Hide text if no replacements are available,Hide text if no replacements are available,Hide text if no replacements are available,,
 display-field-values.custom.splitter.dont_escape_markdown_in_values.label,Auch die Feldinhalte als Markdown rendern,Also render field values as markdown,Also render field values as markdown,Also render field values as markdown,Also render field values as markdown,,
+pdf-creator.node.displayFieldValue.display-name,Feldwerte anzeigen,Display field values,Display field values,Display field values,Display field values,,
