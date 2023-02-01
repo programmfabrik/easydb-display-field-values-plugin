@@ -17,6 +17,9 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 			text: $$("display-field-values.custom.splitter.text.hint-text")
 			appearance: "flat"
 			onClick: =>
+				# result object to check for pool managment available
+				resultObject = @maskEditor.getDemoResultObject()
+
 				fieldNames = []
 				for node in @father.children
 					fieldName = node.getData().field_name
@@ -39,6 +42,11 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 						fieldNames.push("#{fieldName}:standard-3")
 					else
 						fieldNames.push(fieldName)
+
+				# Pool placeholder
+				if(resultObject.mask.schema.system_fields.pool?.output.mode == "show")
+					for attr in ["name", "description", "contact"]
+						fieldNames.push("pool.#{attr}")
 
 				fieldNames = fieldNames.concat(fieldNames.map((fieldName) -> "#{fieldName}:urlencoded")).sort()
 				text = $$("display-field-values.custom.splitter.text.hint-content", fields: fieldNames)
