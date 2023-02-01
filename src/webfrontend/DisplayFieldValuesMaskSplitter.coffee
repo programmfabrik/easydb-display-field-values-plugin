@@ -1,6 +1,7 @@
 class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 
 	@FIELD_NAMES_REGEXP = /%([a-z][a-zA-Z0-9_:\-]{0,61}[a-zA-Z0-9])%/g
+	@POOL_ATTR = ["name", "description", "contact"]
 
 	isSimpleSplit: ->
 		return true
@@ -17,8 +18,6 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 			text: $$("display-field-values.custom.splitter.text.hint-text")
 			appearance: "flat"
 			onClick: =>
-				# result object to check for pool managment available
-				resultObject = @maskEditor.getDemoResultObject()
 
 				fieldNames = []
 				for node in @father.children
@@ -44,8 +43,8 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 						fieldNames.push(fieldName)
 
 				# Pool placeholder
-				if(resultObject.mask.schema.system_fields.pool?.output.mode == "show")
-					for attr in ["name", "description", "contact"]
+				if @maskEditor.current_mask.table?.pool_link
+					for attr in @POOL_ATTR
 						fieldNames.push("pool.#{attr}")
 
 				fieldNames = fieldNames.concat(fieldNames.map((fieldName) -> "#{fieldName}:urlencoded")).sort()
@@ -100,7 +99,6 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 		dataOptions = @getDataOptions()
 		if not dataOptions.text
 			return
-
 		data = opts.data
 		fieldNames = @__getFieldNames(dataOptions.text)
 		label = new CUI.Label(text: "", markdown: true)
@@ -113,6 +111,10 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 				label.show()
 
 			text = @__getLabelText(dataOptions, values)
+
+			#Now we check if pool replacements are needed and replace it.
+			text = @__poolReplacement(data, text)
+
 			label.setText(text)
 		setText()
 
@@ -200,5 +202,28 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 					fieldName = fieldName.replace(/:(.*)/g, "")
 				fieldNames.add(fieldName)
 		return Array.from(fieldNames)
+
+	__poolReplacement: (data, text) ->
+		cleanAndReturn = =>
+			for poolAttr in ez5.DisplayFieldValuesMaskSplitter.POOL_ATTR
+				regexp = new RegExp("%pool.#{poolAttr}%", "g")
+				text = text.replace(regexp, "")
+			return text
+
+		poolObj = ez5.pools.findPoolById(data._pool?.pool._id)
+
+		if not poolObj
+			return cleanAndReturn()
+
+		poolData = poolObj.data.pool
+		for poolAttr in ez5.DisplayFieldValuesMaskSplitter.POOL_ATTR
+			value = poolData[poolAttr]
+			if CUI.util.isEmpty(value)
+				value = ""
+			regexp = new RegExp("%pool.#{poolAttr}%", "g")
+			text = text.replace(regexp, ez5.loca.getBestFrontendValue(value))
+
+		return text
+
 
 MaskSplitter.plugins.registerPlugin(ez5.DisplayFieldValuesMaskSplitter)
