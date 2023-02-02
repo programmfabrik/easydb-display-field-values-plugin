@@ -44,7 +44,7 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 
 				# Pool placeholder
 				if @maskEditor.current_mask.table?.pool_link
-					for attr in @POOL_ATTR
+					for attr in ez5.DisplayFieldValuesMaskSplitter.POOL_ATTR
 						fieldNames.push("pool.#{attr}")
 
 				fieldNames = fieldNames.concat(fieldNames.map((fieldName) -> "#{fieldName}:urlencoded")).sort()
