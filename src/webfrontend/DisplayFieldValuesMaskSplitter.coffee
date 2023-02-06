@@ -96,6 +96,7 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 		return defaultOpts
 
 	renderField: (opts) ->
+		debugger
 		dataOptions = @getDataOptions()
 		if not dataOptions.text
 			return
@@ -227,6 +228,14 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 
 	hasContent: (opts) ->
 		# Returns true if it is linked to pool. Else returns false.
-		return opts.detail.object.mask.table.schema.pool_link
+		if(opts.detail.object.mask.table.schema.pool_link)
+			dataOptions = @getDataOptions()
+			text = dataOptions.text
 
+			console.log("TEXT DATA OPTIONS")
+			console.log(text)
+			return true
+			
+
+		
 MaskSplitter.plugins.registerPlugin(ez5.DisplayFieldValuesMaskSplitter)
