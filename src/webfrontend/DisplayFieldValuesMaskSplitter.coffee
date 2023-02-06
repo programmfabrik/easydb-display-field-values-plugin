@@ -225,5 +225,8 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 
 		return text
 
+	hasContent: (opts) ->
+		# Returns true if it is linked to pool. Else returns false.
+		return opts.detail.object.mask.table.schema.pool_link
 
 MaskSplitter.plugins.registerPlugin(ez5.DisplayFieldValuesMaskSplitter)
