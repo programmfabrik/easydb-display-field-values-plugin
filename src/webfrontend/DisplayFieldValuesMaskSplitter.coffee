@@ -96,7 +96,6 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 		return defaultOpts
 
 	renderField: (opts) ->
-		debugger
 		dataOptions = @getDataOptions()
 		if not dataOptions.text
 			return
@@ -106,7 +105,10 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 
 		setText = =>
 			values = @__getValues(data, fieldNames)
-			if !dataOptions.output_empty and fieldNames.length > 0 and CUI.util.isEmpty(values)
+		
+			if @__hasPoolReplacement(opts)
+				label.show()
+			else if !dataOptions.output_empty and fieldNames.length > 0 and CUI.util.isEmpty(values)
 				label.hide()
 			else
 				label.show()
@@ -228,13 +230,25 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 
 	hasContent: (opts) ->
 		# Returns true if it is linked to pool. Else returns false.
-		if(opts.detail.object.mask.table.schema.pool_link)
+		return @__hasPoolReplacement(opts)	
+
+	__hasPoolReplacement: (opts) ->
+		
+		if opts[opts.mode]?.object.mask.table.schema.pool_link
 			dataOptions = @getDataOptions()
 			text = dataOptions.text
-
-			console.log("TEXT DATA OPTIONS")
-			console.log(text)
-			return true
+			poolObj = ez5.pools.findPoolById(opts.data._pool?.pool._id)
+			poolData = poolObj.data.pool
+			
+			for poolAttr in ez5.DisplayFieldValuesMaskSplitter.POOL_ATTR
+				value = poolData[poolAttr]		
+				if  text?.includes("%pool.#{poolAttr}%") and not CUI.util.isEmpty(value) 	
+					return true
+				else if dataOptions.output_empty == false 
+					return true 
+		return false	
+			
+			
 			
 
 		
