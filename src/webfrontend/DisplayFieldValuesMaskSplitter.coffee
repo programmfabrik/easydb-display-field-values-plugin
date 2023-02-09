@@ -248,7 +248,7 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 			for poolAttr in ez5.DisplayFieldValuesMaskSplitter.POOL_ATTR
 				value = poolData[poolAttr]
 
-				if  text?.includes("%pool.#{poolAttr}%") and not CUI.util.isEmpty(value)
+				if text?.includes("%pool.#{poolAttr}%") and not CUI.util.isEmpty(value)
 					return true
 			
 		return false	

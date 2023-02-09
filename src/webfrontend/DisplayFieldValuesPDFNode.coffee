@@ -1,6 +1,7 @@
 if ez5.PdfCreator
 	class ez5.PdfCreator.Node.DisplayFieldValue extends ez5.PdfCreator.Node
-
+		
+		@POOL_ATTR = ["name", "description", "contact"]
 		@getName: ->
 			"displayFieldValue"
 
@@ -13,12 +14,19 @@ if ez5.PdfCreator
 			text = data.text
 			replacements = @__getFieldNames(text)
 			values = @__getValues(object[object._objecttype], replacements)
-
-			if data.output_empty and replacements.length > 0 and CUI.util.isEmpty(values)
+			
+			if not @__hasPoolReplacement(opts) and replacements.length < 1
+				return 
+			else if data.output_empty and replacements.length > 0 and CUI.util.isEmpty(values)
 				return
 
+			replacementText = @__getLabelText(values)
+			
+			#Replacement for pool
+			replacementText = @__poolReplacement(object[object._objecttype], replacementText)
+
 			content = new CUI.MultilineLabel
-				text: @__getLabelText(values)
+				text: replacementText
 				markdown: true
 
 			return content
@@ -50,6 +58,12 @@ if ez5.PdfCreator
 							fieldNames.push("#{fieldName}:standard-3")
 						else
 							fieldNames.push(fieldName)
+
+					# Add Pool placeholders
+					if @__getMask().table.schema.pool_link
+						for attr in ez5.DisplayFieldValuesMaskSplitter.POOL_ATTR
+							fieldNames.push("pool.#{attr}")
+					
 
 					fieldNames = fieldNames.concat(fieldNames.map((fieldName) -> "#{fieldName}:urlencoded")).sort()
 					text = $$("display-field-values.custom.splitter.text.hint-content", fields: fieldNames)
@@ -163,5 +177,47 @@ if ez5.PdfCreator
 						fieldName = fieldName.replace(/:(.*)/g, "")
 					fieldNames.add(fieldName)
 			return Array.from(fieldNames)
+		
+		__poolReplacement: (data, text) ->
+			
+			cleanAndReturn = =>
+				for poolAttr in ez5.DisplayFieldValuesMaskSplitter.POOL_ATTR
+					regexp = new RegExp("%pool.#{poolAttr}%", "g")
+					text = text.replace(regexp, "")
+				return text
+
+			poolObj = ez5.pools.findPoolById(data._pool?.pool._id)
+
+			if not poolObj
+				return cleanAndReturn()
+
+			poolData = poolObj.data.pool
+			for poolAttr in ez5.DisplayFieldValuesMaskSplitter.POOL_ATTR
+				value = poolData[poolAttr]
+				if CUI.util.isEmpty(value)
+					value = ""
+				regexp = new RegExp("%pool.#{poolAttr}%", "g")
+				text = text.replace(regexp, ez5.loca.getBestFrontendValue(value))
+
+			return text
+
+		__hasPoolReplacement: (opts) ->
+			
+			dataOptions = @getData()
+			text = dataOptions.text
+			poolObj = ez5.pools.findPoolById(opts.object[opts.object._objecttype]._pool?.pool._id)
+			poolData = poolObj.data.pool
+
+			if not dataOptions.output_empty and text?.length > 0
+				return true
+			
+			for poolAttr in ez5.DisplayFieldValuesMaskSplitter.POOL_ATTR
+				value = poolData[poolAttr]
+				if text?.includes("%pool.#{poolAttr}%") and not CUI.util.isEmpty(value)
+					return true
+			
+			return false;
+
+		
 
 	ez5.PdfCreator.plugins.registerPlugin(ez5.PdfCreator.Node.DisplayFieldValue)
