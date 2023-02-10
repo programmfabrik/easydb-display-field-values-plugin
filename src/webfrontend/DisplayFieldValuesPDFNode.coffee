@@ -16,7 +16,8 @@ if ez5.PdfCreator
 			values = @__getValues(object[object._objecttype], replacements)
 			
 			if not @__hasPoolReplacement(opts) and replacements.length < 1
-				return 
+				return
+				
 			else if data.output_empty and replacements.length > 0 and CUI.util.isEmpty(values)
 				return
 
@@ -217,7 +218,5 @@ if ez5.PdfCreator
 					return true
 			
 			return false;
-
-		
 
 	ez5.PdfCreator.plugins.registerPlugin(ez5.PdfCreator.Node.DisplayFieldValue)
