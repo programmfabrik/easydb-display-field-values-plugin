@@ -203,7 +203,7 @@ if ez5.PdfCreator
 			return text
 
 		__hasPoolReplacement: (opts) ->
-			# return false if there is no pool_link
+			# Returns false if there is no pool_link.
 			if not @__getMask().table.schema.pool_link
 				return false
 
