@@ -204,19 +204,22 @@ if ez5.PdfCreator
 
 		__hasPoolReplacement: (opts) ->
 			# return false if there is no pool_link
-			if @__getMask().table.schema.pool_link
-				dataOptions = @getData()
-				text = dataOptions.text
-				poolObj = ez5.pools.findPoolById(opts.object[opts.object._objecttype]._pool?.pool._id)
-				poolData = poolObj.data.pool
+			if not @__getMask().table.schema.pool_link
+				return false
 
-				if not dataOptions.output_empty and text?.length > 0
+			dataOptions = @getData()
+			text = dataOptions.text
+			poolObj = ez5.pools.findPoolById(opts.object[opts.object._objecttype]._pool?.pool._id)
+			poolData = poolObj.data.pool
+
+			if not dataOptions.output_empty and text?.length > 0
+				return true
+
+			for poolAttr in ez5.DisplayFieldValuesMaskSplitter.POOL_ATTR
+				value = poolData[poolAttr]
+				if text?.includes("%pool.#{poolAttr}%") and not CUI.util.isEmpty(value)
 					return true
 
-				for poolAttr in ez5.DisplayFieldValuesMaskSplitter.POOL_ATTR
-					value = poolData[poolAttr]
-					if text?.includes("%pool.#{poolAttr}%") and not CUI.util.isEmpty(value)
-						return true
 			return false;
 
 	ez5.PdfCreator.plugins.registerPlugin(ez5.PdfCreator.Node.DisplayFieldValue)
