@@ -215,6 +215,9 @@ if ez5.PdfCreator
 			if not dataOptions.output_empty and text?.length > 0
 				return true
 
+			if not poolData
+				return false
+
 			for poolAttr in ez5.DisplayFieldValuesMaskSplitter.POOL_ATTR
 				value = poolData[poolAttr]
 				if text?.includes("%pool.#{poolAttr}%") and not CUI.util.isEmpty(value)

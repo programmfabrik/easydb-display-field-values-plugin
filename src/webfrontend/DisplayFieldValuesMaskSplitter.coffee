@@ -242,6 +242,9 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 			poolObj = ez5.pools.findPoolById(opts.data._pool?.pool._id)
 			poolData = poolObj?.data?.pool
 
+			if not poolData
+				return false
+				
 			if not dataOptions.output_empty and text?.length > 0
 				return true 
 			
