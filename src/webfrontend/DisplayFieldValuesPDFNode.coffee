@@ -197,8 +197,14 @@ if ez5.PdfCreator
 				value = poolData[poolAttr]
 				if CUI.util.isEmpty(value)
 					value = ""
+
+				# We replace the pool attr
 				regexp = new RegExp("%pool.#{poolAttr}%", "g")
 				text = text.replace(regexp, ez5.loca.getBestFrontendValue(value))
+
+				# We replace the :urlencoded attribute
+				regexp = new RegExp("%pool.#{poolAttr}:urlencoded%", "g")
+				text = text.replace(regexp, encodeURI(value))
 
 			return text
 
