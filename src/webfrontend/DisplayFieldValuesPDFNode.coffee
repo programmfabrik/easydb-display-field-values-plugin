@@ -185,6 +185,8 @@ if ez5.PdfCreator
 				for poolAttr in ez5.DisplayFieldValuesMaskSplitter.POOL_ATTR
 					regexp = new RegExp("%pool.#{poolAttr}%", "g")
 					text = text.replace(regexp, "")
+					regexp = new RegExp("%pool.#{poolAttr}:urlencoded%", "g")
+					text = text.replace(regexp, "")
 				return text
 
 			poolObj = ez5.pools.findPoolById(data._pool?.pool._id)
@@ -197,10 +199,14 @@ if ez5.PdfCreator
 				value = poolData[poolAttr]
 				if CUI.util.isEmpty(value)
 					value = ""
+				else if poolAttr == "contact"
+					value = value.user?._generated_displayname or ""
+				else
+					value = ez5.loca.getBestFrontendValue(value)
 
 				# We replace the pool attr
 				regexp = new RegExp("%pool.#{poolAttr}%", "g")
-				text = text.replace(regexp, ez5.loca.getBestFrontendValue(value))
+				text = text.replace(regexp, value)
 
 				# We replace the :urlencoded attribute
 				regexp = new RegExp("%pool.#{poolAttr}:urlencoded%", "g")
