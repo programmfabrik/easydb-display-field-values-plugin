@@ -108,9 +108,7 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 
 			if @__hasPoolReplacement(opts)
 				label.show()
-			else if !dataOptions.output_empty and fieldNames.length > 0 and CUI.util.isEmpty(values)
-				label.hide()
-			else if not @__hasPoolReplacement(opts) and dataOptions.output_empty
+			else if !dataOptions.output_empty and fieldNames.length > 0 and CUI.util.isEmpty(values) and not @__hasPoolReplacement(opts)
 				label.hide()
 			else
 				label.show()
