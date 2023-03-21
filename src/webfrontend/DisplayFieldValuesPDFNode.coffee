@@ -45,7 +45,10 @@ if ez5.PdfCreator
 						type = field.FieldSchema._column.type
 						if type == "boolean"
 							continue
-						if type == "daterange"
+						else if type == "eas"
+							# TODO
+							continue
+						else if type == "daterange"
 							fieldNames.push("#{fieldName}:from")
 							fieldNames.push("#{fieldName}:to")
 						else if type in ["text_l10n", "text_l10n_oneline"]
