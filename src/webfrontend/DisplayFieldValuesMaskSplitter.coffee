@@ -146,7 +146,7 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 			text = text.replace(regexp, encodeURI(_value))
 
 			if not dontEscapeMarkdownInValues
-				_value = MarkdownEscape.escape(_value)
+				_value = MarkdownEscape.escape("#{_value}")
 
 			regexp = new RegExp("%#{field}%", "g")
 			text = text.replace(regexp, _value)
@@ -161,7 +161,7 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 						doReplace("#{fieldName}:standard-#{i}", bestValue)
 				else
 					bestValue = ez5.loca.getBestFrontendValue(value)
-					if not CUI.util.isEmpty(bestValue)
+					if not CUI.util.isEmpty(bestValue) and not CUI.isPlainObject(bestValue)
 						doReplace("#{fieldName}:best", bestValue)
 
 					if not CUI.util.isEmpty(value.value) # For dates, for example.
