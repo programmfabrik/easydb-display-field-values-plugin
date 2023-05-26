@@ -1,18 +1,18 @@
-key,de-DE,en-US,da-DK,fi-FI,sv-SE,it-IT,es-ES
-display-field-values.custom.splitter.dont_escape_markdown_in_values.label,Auch die Feldinhalte als Markdown rendern,Also render field values as markdown,Also render field values as markdown,Also render field values as markdown,Visa även fältvärden som markdown,,
-display-field-values.custom.splitter.output_empty.label,"Text ausblenden, wenn keine Ersetzungen verfügbar sind",Hide text if no replacements are available,Hide text if no replacements are available,Hide text if no replacements are available,Dölj text när inga ersättningar finns tillgängliga,,
+key,de-DE,R,en-US,R,da-DK,R,fi-FI,R,sv-SE,R,fr-FR,R,it-IT,R,es-ES,R
+display-field-values.custom.splitter.dont_escape_markdown_in_values.label,Auch die Feldinhalte als Markdown rendern,FALSE,Also render field values as markdown,FALSE,Also render field values as markdown,FALSE,Also render field values as markdown,FALSE,Visa även fältvärden som markdown,FALSE,,FALSE,,FALSE,,FALSE
+display-field-values.custom.splitter.output_empty.label,"Text ausblenden, wenn keine Ersetzungen verfügbar sind",FALSE,Hide text if no replacements are available,FALSE,Hide text if no replacements are available,FALSE,Hide text if no replacements are available,FALSE,Dölj text när inga ersättningar finns tillgängliga,FALSE,,FALSE,,FALSE,,FALSE
 display-field-values.custom.splitter.text.hint-content,"Die folgenden Ersetzungen können im Text verwendet werden: \n\n%(* %|fields|%\n)s
 
-Die Ausgabe wird **markdown** verwenden.","The following replacements can be used in the text: \n\n%(* %|fields|%\n)s
+Die Ausgabe wird **markdown** verwenden.",FALSE,"The following replacements can be used in the text: \n\n%(* %|fields|%\n)s
 
-The output will use **markdown**.","The following replacements can be used in the text: \n\n%(* %|fields|%\n)s
+The output will use **markdown**.",FALSE,"The following replacements can be used in the text: \n\n%(* %|fields|%\n)s
 
-The output will use **markdown**.","The following replacements can be used in the text: \n\n%(* %|fields|%\n)s
+The output will use **markdown**.",FALSE,"The following replacements can be used in the text: \n\n%(* %|fields|%\n)s
 
-The output will use **markdown**.","""Följande ersättningar kan användas i texten: \n\n%(* %|fields|%\n)s\n\nUtdata kommer att använda **markdown**.""",,
-display-field-values.custom.splitter.text.hint-text,Ersetzungen anzeigen,Show replacements,Show replacements,Show replacements,Visa ersättningar,,
-display-field-values.custom.splitter.text.label,Ausgabe,Output,Output,Output,Utdata,,
-display.field.values.mask.splitter.name,Feldwerte anzeigen,Display field values,Display field values,Display field values,Visa fältvärden,,
-display.field.values.mask.splitter.option.blockWidth,%(value)s,%(value)s,%(value)s,%(value)s,%(value)s,,
-display.field.values.mask.splitter.title|text,Feldwerte anzeigen,Display field values,Display field values,Display field values,Visa fältvärden,,
-pdf-creator.node.displayFieldValue.display-name,Feldwerte anzeigen,Display field values,Display field values,Display field values,Visa fältvärden,,
+The output will use **markdown**.",FALSE,"""Följande ersättningar kan användas i texten: \n\n%(* %|fields|%\n)s\n\nUtdata kommer att använda **markdown**.""",FALSE,,FALSE,,FALSE,,FALSE
+display-field-values.custom.splitter.text.hint-text,Ersetzungen anzeigen,FALSE,Show replacements,FALSE,Show replacements,FALSE,Show replacements,FALSE,Visa ersättningar,FALSE,,FALSE,,FALSE,,FALSE
+display-field-values.custom.splitter.text.label,Ausgabe,FALSE,Output,FALSE,Output,FALSE,Output,FALSE,Utdata,FALSE,,FALSE,,FALSE,,FALSE
+display.field.values.mask.splitter.name,Feldwerte anzeigen,FALSE,Display field values,FALSE,Display field values,FALSE,Display field values,FALSE,Visa fältvärden,FALSE,,FALSE,,FALSE,,FALSE
+display.field.values.mask.splitter.option.blockWidth,%(value)s,FALSE,%(value)s,FALSE,%(value)s,FALSE,%(value)s,FALSE,%(value)s,FALSE,,FALSE,,FALSE,,FALSE
+display.field.values.mask.splitter.title|text,Feldwerte anzeigen,FALSE,Display field values,FALSE,Display field values,FALSE,Display field values,FALSE,Visa fältvärden,FALSE,,FALSE,,FALSE,,FALSE
+pdf-creator.node.displayFieldValue.display-name,Feldwerte anzeigen,FALSE,Display field values,FALSE,Display field values,FALSE,Display field values,FALSE,Visa fältvärden,FALSE,,FALSE,,FALSE,,FALSE
