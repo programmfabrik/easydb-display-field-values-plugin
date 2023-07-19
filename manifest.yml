@@ -1,5 +1,8 @@
 plugin:
   name: easydb-display-field-values
+  displayname:
+    en-US: "Display Field Values Plugin"
+    de-DE: "Feldwerte anzeigen"
   version: 1.1
   server:
     api-version:
