@@ -2,6 +2,7 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 
 	@FIELD_NAMES_REGEXP = /%([a-z][a-zA-Z0-9_:\-]{0,61}[a-zA-Z0-9])%/g
 	@POOL_ATTR = ["name", "description", "contact"]
+	@TOP_LEVEL_DATA = ["_system_object_id", "_global_object_id", "_uuid", "_created", "_last_modified"]
 
 	isSimpleSplit: ->
 		return true
@@ -47,7 +48,21 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 					for attr in ez5.DisplayFieldValuesMaskSplitter.POOL_ATTR
 						fieldNames.push("pool.#{attr}")
 
-				fieldNames = fieldNames.concat(fieldNames.map((fieldName) -> "#{fieldName}:urlencoded")).sort()
+				for topData in ez5.DisplayFieldValuesMaskSplitter.TOP_LEVEL_DATA
+					fieldNames.push("object.#{topData}")
+
+				#fieldNames = fieldNames.concat(fieldNames.map((fieldName) -> "#{fieldName}:urlencoded")).sort()
+
+				fieldNames = fieldNames.reduce((acc, fieldName) ->
+					if not fieldName.endsWith("id")
+						acc.push(fieldName)
+						acc.push("#{fieldName}:urlencoded")
+					else
+						acc.push(fieldName)
+					acc
+				, []).sort()
+
+
 				text = $$("display-field-values.custom.splitter.text.hint-content", fields: fieldNames)
 
 				content = new CUI.Label
@@ -117,6 +132,8 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 
 			#Now we check if pool replacements are needed and replace it.
 			text = @__poolReplacement(data, text)
+
+			text = @__topLevelDataReplacement(data, text, opts)
 
 			label.setText(text)
 		setText()
@@ -205,6 +222,23 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 					fieldName = fieldName.replace(/:(.*)/g, "")
 				fieldNames.add(fieldName)
 		return Array.from(fieldNames)
+
+	__topLevelDataReplacement: (data, text, opts) ->
+		topData = opts.top_level_data
+		for topAttr in ez5.DisplayFieldValuesMaskSplitter.TOP_LEVEL_DATA
+
+			value = topData[topAttr]
+
+			value = ez5.format_date_and_time(value) if topAttr in ["_created", "_last_modified"]
+
+			regexp = new RegExp("%object.#{topAttr}%", "g")
+			text = text.replace(regexp, value)
+
+			if not topAttr.endsWith("id")
+				regexp = new RegExp("%object.#{topAttr}:urlencoded%", "g")
+				text = text.replace(regexp, encodeURI(value))
+
+		return text
 
 	__poolReplacement: (data, text) ->
 		cleanAndReturn = =>
