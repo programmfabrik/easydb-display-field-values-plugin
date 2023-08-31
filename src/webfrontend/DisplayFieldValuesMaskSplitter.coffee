@@ -51,8 +51,6 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 				for topData in ez5.DisplayFieldValuesMaskSplitter.TOP_LEVEL_DATA
 					fieldNames.push("object.#{topData}")
 
-				#fieldNames = fieldNames.concat(fieldNames.map((fieldName) -> "#{fieldName}:urlencoded")).sort()
-
 				fieldNames = fieldNames.reduce((acc, fieldName) ->
 					if not fieldName.endsWith("id")
 						acc.push(fieldName)
@@ -133,7 +131,7 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 			#Now we check if pool replacements are needed and replace it.
 			text = @__poolReplacement(data, text)
 
-			text = @__topLevelDataReplacement(data, text, opts)
+			text = @__topLevelDataReplacement(opts, text)
 
 			label.setText(text)
 		setText()
@@ -223,7 +221,7 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 				fieldNames.add(fieldName)
 		return Array.from(fieldNames)
 
-	__topLevelDataReplacement: (data, text, opts) ->
+	__topLevelDataReplacement: (opts, text) ->
 		topData = opts.top_level_data
 		for topAttr in ez5.DisplayFieldValuesMaskSplitter.TOP_LEVEL_DATA
 

@@ -2,6 +2,7 @@ if ez5.PdfCreator
 	class ez5.PdfCreator.Node.DisplayFieldValue extends ez5.PdfCreator.Node
 
 		@POOL_ATTR = ["name", "description", "contact"]
+		@TOP_LEVEL_DATA = ["_system_object_id", "_global_object_id", "_uuid", "_created", "_last_modified"]
 		@getName: ->
 			"displayFieldValue"
 
@@ -25,6 +26,8 @@ if ez5.PdfCreator
 
 			#Replacement for pool
 			replacementText = @__poolReplacement(object[object._objecttype], replacementText)
+			#Replacement for Top Level Data
+			replacementText = @__topLevelDataReplacement(object, replacementText)
 
 			content = new CUI.MultilineLabel
 				text: replacementText
@@ -68,8 +71,18 @@ if ez5.PdfCreator
 						for attr in ez5.DisplayFieldValuesMaskSplitter.POOL_ATTR
 							fieldNames.push("pool.#{attr}")
 
+					for topData in ez5.DisplayFieldValuesMaskSplitter.TOP_LEVEL_DATA
+						fieldNames.push("object.#{topData}")
 
-					fieldNames = fieldNames.concat(fieldNames.map((fieldName) -> "#{fieldName}:urlencoded")).sort()
+					fieldNames = fieldNames.reduce((acc, fieldName) ->
+						if not fieldName.endsWith("id")
+							acc.push(fieldName)
+							acc.push("#{fieldName}:urlencoded")
+						else
+							acc.push(fieldName)
+						acc
+					, []).sort()
+
 					text = $$("display-field-values.custom.splitter.text.hint-content", fields: fieldNames)
 
 					content = new CUI.Label
@@ -181,6 +194,26 @@ if ez5.PdfCreator
 						fieldName = fieldName.replace(/:(.*)/g, "")
 					fieldNames.add(fieldName)
 			return Array.from(fieldNames)
+
+		__topLevelDataReplacement: (opts, text) ->
+			topData = opts
+			debugger
+
+			for topAttr in ez5.DisplayFieldValuesMaskSplitter.TOP_LEVEL_DATA
+
+				value = topData[topAttr]
+
+				value = ez5.format_date_and_time(value) if topAttr in ["_created", "_last_modified"]
+
+				regexp = new RegExp("%object.#{topAttr}%", "g")
+				text = text.replace(regexp, value)
+
+				if not topAttr.endsWith("id")
+					regexp = new RegExp("%object.#{topAttr}:urlencoded%", "g")
+					text = text.replace(regexp, encodeURI(value))
+
+			return text
+
 
 		__poolReplacement: (data, text) ->
 
