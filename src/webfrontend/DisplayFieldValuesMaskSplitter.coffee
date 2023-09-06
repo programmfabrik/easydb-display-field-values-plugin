@@ -2,6 +2,7 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 
 	@FIELD_NAMES_REGEXP = /%([a-z][a-zA-Z0-9_:\-]{0,61}[a-zA-Z0-9])%/g
 	@POOL_ATTR = ["name", "description", "contact"]
+	@TOP_LEVEL_DATA = ["_system_object_id", "_global_object_id", "_uuid", "_created", "_last_modified"]
 
 	isSimpleSplit: ->
 		return true
@@ -46,6 +47,9 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 				if @maskEditor.current_mask.table?.pool_link
 					for attr in ez5.DisplayFieldValuesMaskSplitter.POOL_ATTR
 						fieldNames.push("pool.#{attr}")
+
+				for topData in ez5.DisplayFieldValuesMaskSplitter.TOP_LEVEL_DATA
+					fieldNames.push("object.#{topData}")
 
 				fieldNames = fieldNames.concat(fieldNames.map((fieldName) -> "#{fieldName}:urlencoded")).sort()
 				text = $$("display-field-values.custom.splitter.text.hint-content", fields: fieldNames)
@@ -117,6 +121,8 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 
 			#Now we check if pool replacements are needed and replace it.
 			text = @__poolReplacement(data, text)
+
+			text = @__topLevelDataReplacement(opts.top_level_data, text)
 
 			label.setText(text)
 		setText()
@@ -205,6 +211,23 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 					fieldName = fieldName.replace(/:(.*)/g, "")
 				fieldNames.add(fieldName)
 		return Array.from(fieldNames)
+
+	__topLevelDataReplacement: (topLevelData, text) ->
+		if CUI.util.isEmpty(topLevelData)
+			return text
+		for topAttr in ez5.DisplayFieldValuesMaskSplitter.TOP_LEVEL_DATA
+
+			value = topLevelData[topAttr]
+
+			value = ez5.format_date_and_time(value) if topAttr in ["_created", "_last_modified"]
+
+			regexp = new RegExp("%object.#{topAttr}%", "g")
+			text = text.replace(regexp, value)
+
+			regexp = new RegExp("%object.#{topAttr}:urlencoded%", "g")
+			text = text.replace(regexp, encodeURI(value))
+
+		return text
 
 	__poolReplacement: (data, text) ->
 		cleanAndReturn = =>
