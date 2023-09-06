@@ -51,16 +51,7 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 				for topData in ez5.DisplayFieldValuesMaskSplitter.TOP_LEVEL_DATA
 					fieldNames.push("object.#{topData}")
 
-				fieldNames = fieldNames.reduce((acc, fieldName) ->
-					if not fieldName.endsWith("id")
-						acc.push(fieldName)
-						acc.push("#{fieldName}:urlencoded")
-					else
-						acc.push(fieldName)
-					acc
-				, []).sort()
-
-
+				fieldNames = fieldNames.concat(fieldNames.map((fieldName) -> "#{fieldName}:urlencoded")).sort()
 				text = $$("display-field-values.custom.splitter.text.hint-content", fields: fieldNames)
 
 				content = new CUI.Label
@@ -131,7 +122,7 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 			#Now we check if pool replacements are needed and replace it.
 			text = @__poolReplacement(data, text)
 
-			text = @__topLevelDataReplacement(opts, text)
+			text = @__topLevelDataReplacement(opts.top_level_data, text)
 
 			label.setText(text)
 		setText()
@@ -221,20 +212,20 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 				fieldNames.add(fieldName)
 		return Array.from(fieldNames)
 
-	__topLevelDataReplacement: (opts, text) ->
-		topData = opts.top_level_data
+	__topLevelDataReplacement: (topLevelData, text) ->
+		if CUI.util.isEmpty(topLevelData)
+			return text
 		for topAttr in ez5.DisplayFieldValuesMaskSplitter.TOP_LEVEL_DATA
 
-			value = topData[topAttr]
+			value = topLevelData[topAttr]
 
 			value = ez5.format_date_and_time(value) if topAttr in ["_created", "_last_modified"]
 
 			regexp = new RegExp("%object.#{topAttr}%", "g")
 			text = text.replace(regexp, value)
 
-			if not topAttr.endsWith("id")
-				regexp = new RegExp("%object.#{topAttr}:urlencoded%", "g")
-				text = text.replace(regexp, encodeURI(value))
+			regexp = new RegExp("%object.#{topAttr}:urlencoded%", "g")
+			text = text.replace(regexp, encodeURI(value))
 
 		return text
 
