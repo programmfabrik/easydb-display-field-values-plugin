@@ -2,8 +2,8 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 
 	@FIELD_NAMES_REGEXP = /%([a-z][a-zA-Z0-9_:\-]{0,61}[a-zA-Z0-9])%/g
 	@POOL_ATTR = ["name", "description", "contact"]
-	@TOP_LEVEL_DATA = ["_system_object_id", "_global_object_id", "_uuid", "_created", "_last_modified"]
-
+	@TOP_LEVEL_DATA = ["_system_object_id", "_global_object_id", "_uuid", "_created", "_last_modified", "_owner"]
+	@ADDITIONAL_DATA = ["_version"]
 	isSimpleSplit: ->
 		return true
 
@@ -50,6 +50,9 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 
 				for topData in ez5.DisplayFieldValuesMaskSplitter.TOP_LEVEL_DATA
 					fieldNames.push("object.#{topData}")
+
+				for addData in ez5.DisplayFieldValuesMaskSplitter.ADDITIONAL_DATA
+					fieldNames.push("object.#{addData}")
 
 				fieldNames = fieldNames.concat(fieldNames.map((fieldName) -> "#{fieldName}:urlencoded")).sort()
 				text = $$("display-field-values.custom.splitter.text.hint-content", fields: fieldNames)
@@ -110,9 +113,7 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 		setText = =>
 			values = @__getValues(data, fieldNames)
 
-			if @__hasPoolReplacement(opts)
-				label.show()
-			else if !dataOptions.output_empty and fieldNames.length > 0 and CUI.util.isEmpty(values) and not @__hasPoolReplacement(opts)
+			if not @__hasAnyReplacement(opts,data,values)
 				label.hide()
 			else
 				label.show()
@@ -124,6 +125,7 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 
 			text = @__topLevelDataReplacement(opts.top_level_data, text)
 
+			text = @__additionalDataReplacement(data, text)
 			label.setText(text)
 		setText()
 
@@ -216,15 +218,41 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 		if CUI.util.isEmpty(topLevelData)
 			return text
 		for topAttr in ez5.DisplayFieldValuesMaskSplitter.TOP_LEVEL_DATA
+			if topAttr == "_owner"
+				value = topLevelData[topAttr]?.user._generated_displayname
+				if value is undefined
+					regexp = new RegExp("%object.#{topAttr}%", "g")
+					text = text.replace(regexp, "")
 
-			value = topLevelData[topAttr]
+					regexp = new RegExp("%object.#{topAttr}:urlencoded%", "g")
+					text = text.replace(regexp, "")
+					continue
+			else
+				value = topLevelData[topAttr]
 
-			value = ez5.format_date_and_time(value) if topAttr in ["_created", "_last_modified"]
+			if topAttr in ["_created", "_last_modified"]
+				value = ez5.format_date_and_time(value)
 
 			regexp = new RegExp("%object.#{topAttr}%", "g")
 			text = text.replace(regexp, value)
 
 			regexp = new RegExp("%object.#{topAttr}:urlencoded%", "g")
+			text = text.replace(regexp, encodeURI(value))
+
+		return text
+
+
+	__additionalDataReplacement: (data, text) ->
+		if CUI.util.isEmpty(data)
+			return text
+		for addAttr in ez5.DisplayFieldValuesMaskSplitter.ADDITIONAL_DATA
+
+			value = data[addAttr]
+
+			regexp = new RegExp("%object.#{addAttr}%", "g")
+			text = text.replace(regexp, value)
+
+			regexp = new RegExp("%object.#{addAttr}:urlencoded%", "g")
 			text = text.replace(regexp, encodeURI(value))
 
 		return text
@@ -286,6 +314,27 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 				if text?.includes("%pool.#{poolAttr}%") and not CUI.util.isEmpty(value)
 					return true
 			
-		return false	
-			
+		return false
+
+
+	__hasAnyReplacement: (opts,data,values) ->
+
+		if @__hasPoolReplacement(opts)
+			return true
+
+		if not CUI.util.isEmpty(values)
+			return true
+
+		for topAttr in ez5.DisplayFieldValuesMaskSplitter.TOP_LEVEL_DATA
+			value = data[topAttr]
+			if text?.includes("%object.#{topAttr}%") and not CUI.util.isEmpty(value)
+				return true
+
+		for addData in ez5.DisplayFieldValuesMaskSplitter.ADDITIONAL_DATA
+			value = data[addData]
+			if text?.includes("%object.#{addData}%") and not CUI.util.isEmpty(value)
+				return true
+
+		return false
+
 MaskSplitter.plugins.registerPlugin(ez5.DisplayFieldValuesMaskSplitter)

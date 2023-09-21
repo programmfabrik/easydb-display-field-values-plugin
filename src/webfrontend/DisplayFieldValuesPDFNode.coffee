@@ -2,7 +2,8 @@ if ez5.PdfCreator
 	class ez5.PdfCreator.Node.DisplayFieldValue extends ez5.PdfCreator.Node
 
 		@POOL_ATTR = ["name", "description", "contact"]
-		@TOP_LEVEL_DATA = ["_system_object_id", "_global_object_id", "_uuid", "_created", "_last_modified"]
+		@TOP_LEVEL_DATA = ["_system_object_id", "_global_object_id", "_uuid", "_created", "_last_modified", "_owner"]
+		@ADDITIONAL_DATA = ["_version"]
 		@getName: ->
 			"displayFieldValue"
 
@@ -16,10 +17,7 @@ if ez5.PdfCreator
 			replacements = @__getFieldNames(text)
 			values = @__getValues(object[object._objecttype], replacements)
 
-			if not @__hasPoolReplacement(opts) and replacements.length < 1
-				return
-
-			else if data.output_empty and replacements.length > 0 and CUI.util.isEmpty(values)
+			if not @__hasAnyReplacement(opts,data,values)
 				return
 
 			replacementText = @__getLabelText(values)
@@ -28,6 +26,8 @@ if ez5.PdfCreator
 			replacementText = @__poolReplacement(object[object._objecttype], replacementText)
 			#Replacement for Top Level Data
 			replacementText = @__topLevelDataReplacement(object, replacementText)
+
+			replacementText = @__additionalDataReplacement(object[object._objecttype], replacementText)
 
 			content = new CUI.MultilineLabel
 				text: replacementText
@@ -73,6 +73,9 @@ if ez5.PdfCreator
 
 					for topData in ez5.DisplayFieldValuesMaskSplitter.TOP_LEVEL_DATA
 						fieldNames.push("object.#{topData}")
+
+					for addData in ez5.DisplayFieldValuesMaskSplitter.ADDITIONAL_DATA
+						fieldNames.push("object.#{addData}")
 
 					fieldNames = fieldNames.concat(fieldNames.map((fieldName) -> "#{fieldName}:urlencoded")).sort()
 					text = $$("display-field-values.custom.splitter.text.hint-content", fields: fieldNames)
@@ -191,14 +194,39 @@ if ez5.PdfCreator
 			if CUI.util.isEmpty(topLevelData)
 				return text
 			for topAttr in ez5.DisplayFieldValuesMaskSplitter.TOP_LEVEL_DATA
-				value = topLevelData[topAttr]
+				if topAttr == "_owner"
+					value = topLevelData[topAttr]?.user._generated_displayname
+					if value is undefined
+						regexp = new RegExp("%object.#{topAttr}%", "g")
+						text = text.replace(regexp, "")
 
-				value = ez5.format_date_and_time(value) if topAttr in ["_created", "_last_modified"]
+						regexp = new RegExp("%object.#{topAttr}:urlencoded%", "g")
+						text = text.replace(regexp, "")
+						continue
+				else
+					value = topLevelData[topAttr]
+					if topAttr in ["_created", "_last_modified"]
+						value = ez5.format_date_and_time(value)
 
 				regexp = new RegExp("%object.#{topAttr}%", "g")
 				text = text.replace(regexp, value)
 
 				regexp = new RegExp("%object.#{topAttr}:urlencoded%", "g")
+				text = text.replace(regexp, encodeURI(value))
+
+			return text
+
+		__additionalDataReplacement: (data, text) ->
+			if CUI.util.isEmpty(data)
+				return text
+			for addAttr in ez5.DisplayFieldValuesMaskSplitter.ADDITIONAL_DATA
+
+				value = data[addAttr]
+
+				regexp = new RegExp("%object.#{addAttr}%", "g")
+				text = text.replace(regexp, value)
+
+				regexp = new RegExp("%object.#{addAttr}:urlencoded%", "g")
 				text = text.replace(regexp, encodeURI(value))
 
 			return text
@@ -261,5 +289,25 @@ if ez5.PdfCreator
 					return true
 
 			return false;
+
+		__hasAnyReplacement: (opts,data,values) ->
+
+			if @__hasPoolReplacement(opts)
+				return true
+
+			if not CUI.util.isEmpty(values)
+				return true
+
+			for topAttr in ez5.DisplayFieldValuesMaskSplitter.TOP_LEVEL_DATA
+				value = data[topAttr]
+				if text?.includes("%object.#{topAttr}%") and not CUI.util.isEmpty(value)
+					return true
+
+			for addData in ez5.DisplayFieldValuesMaskSplitter.ADDITIONAL_DATA
+				value = data[addData]
+				if text?.includes("%object.#{addData}%") and not CUI.util.isEmpty(value)
+					return true
+
+			return false
 
 	ez5.PdfCreator.plugins.registerPlugin(ez5.PdfCreator.Node.DisplayFieldValue)
