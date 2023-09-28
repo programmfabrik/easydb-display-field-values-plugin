@@ -17,7 +17,7 @@ if ez5.PdfCreator
 			replacements = @__getFieldNames(text)
 			values = @__getValues(object[object._objecttype], replacements)
 
-			if not @__hasAnyReplacement(opts,data,values)
+			if not @__hasAnyReplacement(data,values,opts)
 				return
 
 			replacementText = @__getLabelText(values)
@@ -71,8 +71,8 @@ if ez5.PdfCreator
 						for attr in ez5.DisplayFieldValuesMaskSplitter.POOL_ATTR
 							fieldNames.push("pool.#{attr}")
 
-					for topData in ez5.DisplayFieldValuesMaskSplitter.TOP_LEVEL_DATA
-						fieldNames.push("object.#{topData}")
+					for topLevelData in ez5.DisplayFieldValuesMaskSplitter.TOP_LEVEL_DATA
+						fieldNames.push("object.#{topLevelData}")
 
 					for addData in ez5.DisplayFieldValuesMaskSplitter.ADDITIONAL_DATA
 						fieldNames.push("object.#{addData}")
@@ -196,7 +196,7 @@ if ez5.PdfCreator
 			for topAttr in ez5.DisplayFieldValuesMaskSplitter.TOP_LEVEL_DATA
 				if topAttr == "_owner"
 					value = topLevelData[topAttr]?.user._generated_displayname
-					if value is undefined
+					if CUI.util.isEmpty(value)
 						regexp = new RegExp("%object.#{topAttr}%", "g")
 						text = text.replace(regexp, "")
 
@@ -290,7 +290,7 @@ if ez5.PdfCreator
 
 			return false;
 
-		__hasAnyReplacement: (opts,data,values) ->
+		__hasAnyReplacement: (data,values, opts={}) ->
 
 			if @__hasPoolReplacement(opts)
 				return true

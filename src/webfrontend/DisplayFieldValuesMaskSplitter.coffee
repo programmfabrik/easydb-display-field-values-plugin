@@ -48,8 +48,8 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 					for attr in ez5.DisplayFieldValuesMaskSplitter.POOL_ATTR
 						fieldNames.push("pool.#{attr}")
 
-				for topData in ez5.DisplayFieldValuesMaskSplitter.TOP_LEVEL_DATA
-					fieldNames.push("object.#{topData}")
+				for topLevelData in ez5.DisplayFieldValuesMaskSplitter.TOP_LEVEL_DATA
+					fieldNames.push("object.#{topLevelData}")
 
 				for addData in ez5.DisplayFieldValuesMaskSplitter.ADDITIONAL_DATA
 					fieldNames.push("object.#{addData}")
@@ -113,10 +113,10 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 		setText = =>
 			values = @__getValues(data, fieldNames)
 
-			if not @__hasAnyReplacement(opts,data,values)
-				label.hide()
-			else
+			if @__hasAnyReplacement(data,values,opts)
 				label.show()
+			else
+				label.hide()
 
 			text = @__getLabelText(dataOptions, values)
 
@@ -220,7 +220,7 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 		for topAttr in ez5.DisplayFieldValuesMaskSplitter.TOP_LEVEL_DATA
 			if topAttr == "_owner"
 				value = topLevelData[topAttr]?.user._generated_displayname
-				if value is undefined
+				if CUI.util.isEmpty(value)
 					regexp = new RegExp("%object.#{topAttr}%", "g")
 					text = text.replace(regexp, "")
 
@@ -317,7 +317,7 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 		return false
 
 
-	__hasAnyReplacement: (opts,data,values) ->
+	__hasAnyReplacement: (data,values, opts={}) ->
 
 		if @__hasPoolReplacement(opts)
 			return true
