@@ -190,7 +190,6 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 		return text
 
 	__getValues: (data, fieldNames) ->
-		debugger
 		values = {}
 		for fieldName in fieldNames
 			value = data[fieldName]
