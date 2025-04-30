@@ -190,6 +190,7 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 		return text
 
 	__getValues: (data, fieldNames) ->
+		debugger
 		values = {}
 		for fieldName in fieldNames
 			value = data[fieldName]
@@ -219,7 +220,7 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 			return text
 		for topAttr in ez5.DisplayFieldValuesMaskSplitter.TOP_LEVEL_DATA
 			if topAttr == "_owner"
-				value = topLevelData[topAttr]?.user._generated_displayname
+				value = topLevelData[topAttr]?.user?._generated_displayname or topLevelData[topAttr]?.group?._generated_displayname
 				if CUI.util.isEmpty(value)
 					regexp = new RegExp("%object.#{topAttr}%", "g")
 					text = text.replace(regexp, "")
@@ -277,7 +278,7 @@ class ez5.DisplayFieldValuesMaskSplitter extends CustomMaskSplitter
 			if CUI.util.isEmpty(value)
 				value = ""
 			else if poolAttr == "contact"
-				value = value.user?._generated_displayname or ""
+				value = value.user?._generated_displayname or value.group?._generated_displayname ""
 			else
 				value = ez5.loca.getBestFrontendValue(value)
 
