@@ -1,20 +1,20 @@
 key,de-DE,R,en-US,R,da-DK,R,fi-FI,R,sv-SE,R,fr-FR,R,it-IT,R,es-ES,R
-display-field-values.custom.splitter.dont_escape_markdown_in_values.label,Auch die Feldinhalte als Markdown rendern,FALSE,Also render field values as markdown,FALSE,Also render field values as markdown,FALSE,Renderöi kenttäarvot myös Markdown-muodossa,TRUE,Visa även fältvärden som markdown,FALSE,Afficher également les valeurs des champs sous forme de Markdown,FALSE,,FALSE,,FALSE
-display-field-values.custom.splitter.output_empty.label,"Text ausblenden, wenn keine Ersetzungen verfügbar sind",FALSE,Hide text if no replacements are available,FALSE,Hide text if no replacements are available,FALSE,Hide text if no replacements are available,TRUE,Dölj text när inga ersättningar finns tillgängliga,FALSE,Masquer le texte si aucun remplacement n'est disponible,FALSE,,FALSE,,FALSE
+display-field-values.custom.splitter.dont_escape_markdown_in_values.label,Auch die Feldinhalte als Markdown rendern,FALSE,Also render field values as markdown,FALSE,Also render field values as markdown,FALSE,Näytä myös kenttien arvot markdown-muodossa,TRUE,Visa även fältvärden som markdown,FALSE,Afficher également les valeurs des champs sous forme de Markdown,FALSE,,FALSE,,FALSE
+display-field-values.custom.splitter.output_empty.label,"Text ausblenden, wenn keine Ersetzungen verfügbar sind",FALSE,Hide text if no replacements are available,FALSE,Hide text if no replacements are available,FALSE,"Piilota teksti, jos korvauksia ei ole saatavilla",TRUE,Dölj text när inga ersättningar finns tillgängliga,FALSE,Masquer le texte si aucun remplacement n'est disponible,FALSE,,FALSE,,FALSE
 display-field-values.custom.splitter.text.hint-content,"Die folgenden Ersetzungen können im Text verwendet werden: \n\n%(* %|fields|%\n)s
 
 Die Ausgabe wird **markdown** verwenden.",FALSE,"The following replacements can be used in the text: \n\n%(* %|fields|%\n)s
 
 The output will use **markdown**.",FALSE,"The following replacements can be used in the text: \n\n%(* %|fields|%\n)s
 
-The output will use **markdown**.",FALSE,"The following replacements can be used in the text: \n\n%(* %|fields|%\n)s
+The output will use **markdown**.",FALSE,"Tekstissä voi käyttää seuraavia korvauksia: \n\n%(* %|fields|%\n)s
 
-The output will use **markdown**.",TRUE,"""Följande ersättningar kan användas i texten: \n\n%(* %|fields|%\n)s\n\nUtdata kommer att använda **markdown**.""",FALSE,"Les remplacements suivants peuvent être utilisés dans le texte : \n\n%(* %|fields|%\n)s
+Tulos näytetään muodossa **markdown**.",TRUE,"""Följande ersättningar kan användas i texten: \n\n%(* %|fields|%\n)s\n\nUtdata kommer att använda **markdown**.""",FALSE,"Les remplacements suivants peuvent être utilisés dans le texte : \n\n%(* %|fields|%\n)s
 
 La sortie utilisera **markdown**.",FALSE,,FALSE,,FALSE
-display-field-values.custom.splitter.text.hint-text,Ersetzungen anzeigen,FALSE,Show replacements,FALSE,Show replacements,FALSE,Show replacements,TRUE,Visa ersättningar,FALSE,Afficher les substituts,FALSE,,FALSE,,FALSE
-display-field-values.custom.splitter.text.label,Ausgabe,FALSE,Output,FALSE,Output,FALSE,Output,TRUE,Utdata,FALSE,Sortir,FALSE,,FALSE,,FALSE
-display.field.values.mask.splitter.name,Feldwerte anzeigen,FALSE,Display field values,FALSE,Display field values,FALSE,Display field values,TRUE,Visa fältvärden,FALSE,Afficher les valeurs des champs,FALSE,,FALSE,,FALSE
+display-field-values.custom.splitter.text.hint-text,Ersetzungen anzeigen,FALSE,Show replacements,FALSE,Show replacements,FALSE,Näytä korvaukset,TRUE,Visa ersättningar,FALSE,Afficher les substituts,FALSE,,FALSE,,FALSE
+display-field-values.custom.splitter.text.label,Ausgabe,FALSE,Output,FALSE,Output,FALSE,Tuloste,TRUE,Utdata,FALSE,Sortir,FALSE,,FALSE,,FALSE
+display.field.values.mask.splitter.name,Feldwerte anzeigen,FALSE,Display field values,FALSE,Display field values,FALSE,Näytä kenttien arvot,TRUE,Visa fältvärden,FALSE,Afficher les valeurs du champ,FALSE,,FALSE,,FALSE
 display.field.values.mask.splitter.option.blockWidth,%(value)s,FALSE,%(value)s,FALSE,%(value)s,FALSE,%(value)s,TRUE,%(value)s,FALSE,%(value)s,FALSE,,FALSE,,FALSE
-display.field.values.mask.splitter.title|text,Feldwerte anzeigen,FALSE,Display field values,FALSE,Display field values,FALSE,Display field values,TRUE,Visa fältvärden,FALSE,Afficher les valeurs des champs,FALSE,,FALSE,,FALSE
-pdf-creator.node.displayFieldValue.display-name,Feldwerte anzeigen,FALSE,Display field values,FALSE,Display field values,FALSE,Display field values,TRUE,Visa fältvärden,FALSE,Afficher les valeurs des champs,FALSE,,FALSE,,FALSE
+display.field.values.mask.splitter.title|text,Feldwerte anzeigen,FALSE,Display field values,FALSE,Display field values,FALSE,Näytä kenttien arvot,TRUE,Visa fältvärden,FALSE,Afficher les valeurs du champ,FALSE,,FALSE,,FALSE
+pdf-creator.node.displayFieldValue.display-name,Feldwerte anzeigen,FALSE,Display field values,FALSE,Display field values,FALSE,Näytä kenttien arvot,TRUE,Visa fältvärden,FALSE,Afficher les valeurs du champ,FALSE,,FALSE,,FALSE
