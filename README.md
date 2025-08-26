@@ -1,5 +1,6 @@
 # easydb-display-field-values
-Custom Mask Splitter to output field values of the object.
+
+Custom Mask Splitter for **easydb5** to output field values of the object.
 
 [Technical documentation](https://docs.easydb.de/en/technical/plugins/reference/webfrontend/display-field-values/)
 
