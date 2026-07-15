@@ -1,0 +1,33 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install build tools (coffeescript + sass)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y coffeescript
+          npm install -g sass
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Build and package the plugin zip
+        run: make zip
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Release ${{ github.ref_name }}
+          draft: false
+          generate_release_notes: true
+          files: |
+            easydb-display-field-values.zip

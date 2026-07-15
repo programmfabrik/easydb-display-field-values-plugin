@@ -32,3 +32,17 @@ code: $(JS)
 clean: clean-base
 
 wipe: wipe-base
+
+# fylr: build an installable plugin zip. The top-level directory must equal the
+# manifest plugin name ($(PLUGIN_NAME)); a URL/zip install rejects any other
+# name (fylr internal/baseconfig/plugin_check.go). Layout mirrors what fylr
+# loads from disk: manifest.yml + build/ (base_url_prefix defaults to
+# build/webfrontend) + src/server (server-side callback scripts, if any).
+zip: clean build
+	rm -rf $(PLUGIN_NAME) $(PLUGIN_NAME).zip
+	mkdir -p $(PLUGIN_NAME)
+	cp -r build $(PLUGIN_NAME)/build
+	cp manifest.yml build-info.json $(PLUGIN_NAME)/
+	if [ -d src/server ]; then mkdir -p $(PLUGIN_NAME)/src && cp -r src/server $(PLUGIN_NAME)/src/server; fi
+	zip -r $(PLUGIN_NAME).zip $(PLUGIN_NAME)
+	rm -rf $(PLUGIN_NAME)
