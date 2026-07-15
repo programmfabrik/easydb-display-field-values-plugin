@@ -4,6 +4,11 @@ plugin:
   displayname:
     en-US: "Display Field Values Plugin"
     de-DE: "Feldwerte anzeigen"
+  info:
+    de-DE: |
+      Ein benutzerdefinierter Masken-Splitter, der die Werte der Felder eines Objekts innerhalb der Maske ausgibt. Damit lassen sich ausgewählte Feldwerte direkt in der Detailansicht einblenden.
+    en-US: |
+      A custom mask splitter that outputs the values of an object's fields within the mask layout. Use it to surface selected field values inline in the detail view.
   version: 1.1
   server:
     api-version:
